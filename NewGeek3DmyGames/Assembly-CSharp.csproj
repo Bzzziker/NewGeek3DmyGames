@@ -63,12 +63,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\AIControl\Scripts\MyAIContol.cs" />
+    <Compile Include="Assets\AIControl\Scripts\Stats.cs" />
     <Compile Include="Assets\NavmeshComponents\Scripts\EnableIffSleeping.cs" />
     <Compile Include="Assets\NavmeshComponents\Scripts\LocalNavMeshBuilder.cs" />
     <Compile Include="Assets\NavmeshComponents\Scripts\NavMeshSourceTag.cs" />
     <Compile Include="Assets\PlayerContorl\Scripts\MouseControl.cs" />
-    <Compile Include="Assets\Warrior Pack\Fighter Pack Bundle FREE\Code\CameraControl.cs" />
-    <Compile Include="Assets\Warrior Pack\Fighter Pack Bundle FREE\Code\FighterAnimationDemoFREE.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Unity/NewGeek3DmyGames/NewGeek3DmyGames/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
