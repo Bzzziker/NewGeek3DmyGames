@@ -41,7 +41,7 @@ public class MyAIContol : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.E))
         {
 
-            anicontorl(anicontrols.Run);
+            this.gameObject.tag = "Player";
         }
         if (Input.GetKeyDown(KeyCode.A))
         {

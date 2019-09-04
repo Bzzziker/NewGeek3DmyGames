@@ -68,6 +68,9 @@
     <Compile Include="Assets\NavmeshComponents\Scripts\LocalNavMeshBuilder.cs" />
     <Compile Include="Assets\NavmeshComponents\Scripts\NavMeshSourceTag.cs" />
     <Compile Include="Assets\PlayerContorl\Scripts\MouseControl.cs" />
+    <Compile Include="Assets\PlayerContorl\Scripts\PlayerControl.cs" />
+    <Compile Include="Assets\Prefabs\Building.cs" />
+    <Compile Include="Assets\Prefabs\InfrastructureContorl.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Unity/NewGeek3DmyGames/NewGeek3DmyGames/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
