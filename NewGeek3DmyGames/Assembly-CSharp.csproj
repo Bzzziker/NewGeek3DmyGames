@@ -71,6 +71,7 @@
     <Compile Include="Assets\PlayerContorl\Scripts\PlayerControl.cs" />
     <Compile Include="Assets\Prefabs\Building.cs" />
     <Compile Include="Assets\Prefabs\InfrastructureContorl.cs" />
+    <Compile Include="Assets\Prefabs\WorkForAi.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Unity/NewGeek3DmyGames/NewGeek3DmyGames/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>

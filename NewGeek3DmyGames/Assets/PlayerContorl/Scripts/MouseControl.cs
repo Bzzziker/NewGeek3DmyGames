@@ -26,8 +26,24 @@ public class MouseControl : MonoBehaviour
     
 
 
-    RaycastHit hit;
+    public RaycastHit hit;
 
+    //Строительство
+    public GameObject go_building;
+    public GameObject completion_building;
+    public bool bo_building=false;
+    public LayerMask mask;
+    public int triger_enter;
+
+
+
+
+    float MouceScrol;
+    float MouceScrol_min=10f;
+    float MouceScrol_max=25f;
+    float MouceScrol_speed = 100f;
+
+    
 
     // Start is called before the first frame update
     void Start()
@@ -39,15 +55,42 @@ public class MouseControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            go_building = null;
+            bo_building = false;
+            Activ_Object.Clear();
+            if (completion_building != null)
+                completion_building.GetComponent<InfrastructureContorl>()._destroy();
+
+        }
+
+
+        //Перемещение мыши
         if (Input.mousePosition.x > 2) this.transform.position += transform.right * Time.deltaTime * speed; //пр
         if (Input.mousePosition.x < Screen.width - 2) this.transform.position -= transform.right * Time.deltaTime * speed; //лев
         if (Input.mousePosition.y > 2) this.transform.position += transform.forward * Time.deltaTime * speed; //пр
         if (Input.mousePosition.y < Screen.height - 2) this.transform.position -= transform.forward * Time.deltaTime * speed; //пр
 
+        MouceScrol = Input.GetAxis("Mouse ScrollWheel");
+        if ((MouceScrol > 0.1) && (transform.position.y >= MouceScrol_min))
+        {
+            transform.position -= transform.up * Time.deltaTime * MouceScrol_speed;
+        }
+        if ((MouceScrol < -0.1) && (transform.position.y <= MouceScrol_max) )
+        {
+            transform.position += transform.up * Time.deltaTime * MouceScrol_speed;
+        }
+
+
+
+
+
+
         //RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out hit))
+        
+        if ((Physics.Raycast(ray, out hit))&&bo_building==false)
         {
             test = hit.collider.gameObject;
             if (EventSystem.current.IsPointerOverGameObject())
@@ -129,9 +172,54 @@ public class MouseControl : MonoBehaviour
             
             
 
+            if(go_building!=null)
+            {
+                //go_building.transform.position = new Vector3(hit.point.x,hit.point.y,hit.point.z);
+               
+            }
+
+
+
+        }
+
+        if((Physics.Raycast(ray, out hit,1000f, mask))&&bo_building==true)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                triger_enter = completion_building.GetComponent<InfrastructureContorl>().triger_enter;
+                if (triger_enter <= 0)
+                {
+                    completion_building.GetComponent<InfrastructureContorl>().MoveStop(hit.point);
+                    completion_building = null;
+                    bo_building = false;
+                }
+            }
+
+
+            if (completion_building != null)
+                completion_building.transform.position = hit.point;
+
+         
+
 
         }
 
 
+
+
+    }
+    public void Building(GameObject go)
+    {
+        go_building = null;
+        completion_building = null;
+        Activ_Object.Clear();
+        go_building = go;
+        bo_building = true;
+        Instantiate(go_building, hit.point, Quaternion.identity);
+    }
+
+    public void Building_test(GameObject go)
+    {
+        completion_building = go;
     }
 }
