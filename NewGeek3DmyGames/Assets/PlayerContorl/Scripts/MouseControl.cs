@@ -162,10 +162,13 @@ public class MouseControl : MonoBehaviour
                         //{
                         //Activ_Object[i].GetComponent<PlayerControl>().Moving(hit.point);
                         //}
+                        //if(hit.collider.tag==)
                         foreach (GameObject go in Activ_Object)
                         {
                             go.GetComponent<PlayerControl>().Moving(hit.point);
                         }
+
+
                     }
                 }
             }
