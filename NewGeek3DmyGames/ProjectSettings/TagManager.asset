@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Enemy
   - PlayerObject
+  - CameraMotor
+  - Infrastructure
   layers:
   - Default
   - TransparentFX
@@ -15,7 +17,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - Terrain
   - 
   - 
   - 
