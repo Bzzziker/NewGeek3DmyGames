@@ -1,228 +1,300 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 using System.Linq;
 using UnityEngine.EventSystems;
 
 
 public class MouseControl : MonoBehaviour
 {
-    //Выделеные объекты
-    public List<GameObject> Activ_Object;
+  
+    public List<GameObject> ActivObject;
 
-    //Курсор
-    public Texture2D cursor_texture_base;
-    public Texture2D cursor_texture;
-    public CursorMode cursor_mode = CursorMode.Auto;
+    public GameObject MenuRightButtonMouseEnemy;
+    public GameObject MenuRightButtonMouseInfrastructure;
+    public GameObject MenuRightButtonMouseTarget;
+
+    RectTransform _Canvas;
+
+    public Texture2D CursorTextureBase;
+    public Texture2D CursorTexture;
+    public CursorMode CursorMode = CursorMode.Auto;
 
     [SerializeField]
-    float speed;
+    float _Speed = 100;
 
     [SerializeField]
-    GameObject test;
+    GameObject test; // переменная несет чисто тестовыйх характер, после чего будет удалена
     [SerializeField]
-    string test3;
-    
-
+    string test3;  // переменная несет чисто тестовыйх характер, после чего будет удалена
 
     public RaycastHit hit;
 
-    //Строительство
-    public GameObject go_building;
-    public GameObject completion_building;
-    public bool bo_building=false;
-    public LayerMask mask;
-    public int triger_enter;
+    public GameObject BuildingGo;
+    public GameObject CompletionBuilding;
+    public bool BuildingBo=false;
+    public LayerMask Mask;
+    int _TrigerEnter;
 
+    float _MouceScrol;
+    float _MouceScrolMin=10f;
+    float _MouceScrolMax=25f;
+    float _MouceScrolSpeed = 100f;
+    int _MinMaxScreenIntend = 2;
 
-
-
-    float MouceScrol;
-    float MouceScrol_min=10f;
-    float MouceScrol_max=25f;
-    float MouceScrol_speed = 100f;
-
-    
-
-    // Start is called before the first frame update
     void Start()
     {
-        Activ_Object = new List<GameObject>();
-        
+        ActivObject = new List<GameObject>();
+        MenuRightButtonMouseEnemy = GameObject.FindGameObjectWithTag("MenuRightButtonMouseEnemy");
+        MenuRightButtonMouseEnemy.SetActive(false);
     }
 
-    // Update is called once per frame
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.Escape))
         {
-            go_building = null;
-            bo_building = false;
-            Activ_Object.Clear();
-            if (completion_building != null)
-                completion_building.GetComponent<InfrastructureContorl>()._destroy();
-
+            Deselect();
         }
+        
+        MouseMove();
+        #region // MouseMove в тестовом режиме 
+        //var TimeDeltaTime = Time.deltaTime;
+        //if (Input.mousePosition.x > 2) transform.position += transform.right * TimeDeltaTime * speed; //пр
+        //if (Input.mousePosition.x < Screen.width - 2) this.transform.position -= transform.right * TimeDeltaTime * speed; //лев
+        //if (Input.mousePosition.y > 2) this.transform.position += transform.forward * TimeDeltaTime * speed; //пр
+        //if (Input.mousePosition.y < Screen.height - 2) this.transform.position -= transform.forward * TimeDeltaTime * speed; //пр
 
-
-        //Перемещение мыши
-        if (Input.mousePosition.x > 2) this.transform.position += transform.right * Time.deltaTime * speed; //пр
-        if (Input.mousePosition.x < Screen.width - 2) this.transform.position -= transform.right * Time.deltaTime * speed; //лев
-        if (Input.mousePosition.y > 2) this.transform.position += transform.forward * Time.deltaTime * speed; //пр
-        if (Input.mousePosition.y < Screen.height - 2) this.transform.position -= transform.forward * Time.deltaTime * speed; //пр
-
-        MouceScrol = Input.GetAxis("Mouse ScrollWheel");
-        if ((MouceScrol > 0.1) && (transform.position.y >= MouceScrol_min))
-        {
-            transform.position -= transform.up * Time.deltaTime * MouceScrol_speed;
-        }
-        if ((MouceScrol < -0.1) && (transform.position.y <= MouceScrol_max) )
-        {
-            transform.position += transform.up * Time.deltaTime * MouceScrol_speed;
-        }
-
-
-
-
-
-
-        //RaycastHit hit;
+        //MouceScrol = Input.GetAxis("Mouse ScrollWheel");
+        //if ((MouceScrol > 0.1) && (transform.position.y >= MouceScrolMin))
+        //{
+        //    transform.position -= transform.up * Time.deltaTime * MouceScrolSpeed;
+        //}
+        //if ((MouceScrol < -0.1) && (transform.position.y <= MouceScrolMax) )
+        //{
+        //    transform.position += transform.up * Time.deltaTime * MouceScrolSpeed;
+        //}
+        #endregion
+              
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         
-        if ((Physics.Raycast(ray, out hit))&&bo_building==false)
+        if ((Physics.Raycast(ray, out hit)) && BuildingBo == false)
         {
             test = hit.collider.gameObject;
             if (EventSystem.current.IsPointerOverGameObject())
                 return;
-
-
-            if (Activ_Object.Count>0&&hit.collider.tag=="Enemy")
+            
+            if (ActivObject.Count > 0 && hit.collider.CompareTag("Enemy"))
             {
-                Cursor.SetCursor(cursor_texture, Vector2.zero, cursor_mode);
+                Cursor.SetCursor(CursorTexture, Vector2.zero, CursorMode);
             }
             else
             {
-                Cursor.SetCursor(cursor_texture_base, Vector2.zero, cursor_mode);
+                Cursor.SetCursor(CursorTextureBase, Vector2.zero, CursorMode);
             }
 
             if (Input.GetMouseButtonDown(0))
             {
-                
                 var test2 = hit.collider.name;
                 test3 = test2;
 
-                if (hit.collider.tag=="Player")
+                MenuRightButtonMouseEnemy.SetActive(false);
+
+                if (hit.collider.CompareTag("Player"))
                 {
                     if((Input.GetKey(KeyCode.LeftShift)) || (Input.GetKeyDown(KeyCode.RightShift)))
                     {
-                        if (!Activ_Object.Any(ob => ob ==hit.collider.gameObject))
+                        if (!ActivObject.Any(ob => ob == hit.collider.gameObject))
                         {
-                            // Activ_Object.Clear();
-                            Activ_Object.Add(hit.collider.gameObject);
-
+                            ActivObject.Add(hit.collider.gameObject);
                         }
                       
                     }
                     else
                     {
-                        Activ_Object.Clear();
-                        Activ_Object.Add(hit.collider.gameObject);
+                        ActivObject.Clear();
+                        ActivObject.Add(hit.collider.gameObject);
                     }
                    
-
                 }
-
+                #region На удаление после проверки работоспособости
                 //if ((hit.collider.tag == "Player")&&(Input.GetKey(KeyCode.LeftShift))||(Input.GetKeyDown(KeyCode.RightShift)))
                 //{
-                    
+
                 //    Activ_Object.Add(hit.collider.gameObject);
                 //}
+                #endregion
 
-
-                if (hit.collider.tag == "PlayerObject")
+                if (hit.collider.CompareTag("PlayerObject"))
                 {
-                    Activ_Object.Clear();
-                    Activ_Object.Add(hit.collider.gameObject);
+                    ActivObject.Clear();
+                    ActivObject.Add(hit.collider.gameObject);
                 }
-
+                #region На удаление после проверки работоспособости
                 //if (Activ_Object.Count == 0)
                 //{
                 //    Activ_Object.Add(hit.collider.gameObject);
                 //}
+                #endregion
 
-
-
-
-                if (Activ_Object != null)
+                if (ActivObject != null)
                 {
                     if (Input.GetMouseButtonDown(0))
                     {
+                        #region На удаление после проверки работоспособости
                         //for(int i=0; i<Activ_Object.Count;i++)
                         //{
                         //Activ_Object[i].GetComponent<PlayerControl>().Moving(hit.point);
                         //}
                         //if(hit.collider.tag==)
-                        foreach (GameObject go in Activ_Object)
+                        #endregion
+                        if ((hit.collider.CompareTag("Enemy")) || (hit.collider.CompareTag("EnemyObject")))
                         {
-                            go.GetComponent<PlayerControl>().Moving(hit.point);
-                        }
+                            foreach (GameObject go in ActivObject)
+                            {
+                                go.GetComponent<PlayerControl>().Attack(hit.collider.gameObject);
 
+                            }                          
+                        }
+                        else
+                        {
+                            foreach (GameObject go in ActivObject)
+                            {
+                                go.GetComponent<PlayerControl>().attaked = false;
+                                go.GetComponent<PlayerControl>().Moving(hit.point);
+                                
+                            }
+                        }
 
                     }
                 }
             }
-            
-            
+ 
+            if(Input.GetMouseButtonDown(1))
+            {
+                if(hit.collider.CompareTag("Enemy"))
+                {
+                    MenuRightButtonMouseEnemy.SetActive(true);
+                    //44 23 это магические числа, которые потом будут переделаны в переменные
+                    MenuRightButtonMouseTarget = hit.collider.gameObject;
+                    MenuRightButtonMouseEnemy.transform.position = new Vector2 (Input.mousePosition.x + 44, Input.mousePosition.y + 23.5f);
+                 }
+                if(hit.collider.CompareTag("Infrastructure"))
+                {
+                    MenuRightButtonMouseTarget = hit.collider.gameObject;
+                }
+            }
 
-            if(go_building!=null)
+            if(BuildingGo!=null)
             {
                 //go_building.transform.position = new Vector3(hit.point.x,hit.point.y,hit.point.z);
                
             }
-
-
-
         }
 
-        if((Physics.Raycast(ray, out hit,1000f, mask))&&bo_building==true)
+        if((Physics.Raycast(ray, out hit, 200f, Mask)) && BuildingBo == true)
         {
             if (Input.GetMouseButtonDown(0))
             {
-                triger_enter = completion_building.GetComponent<InfrastructureContorl>().triger_enter;
-                if (triger_enter <= 0)
+                _TrigerEnter = CompletionBuilding.GetComponent<InfrastructureContorl>().TrigerEnter;
+                if (_TrigerEnter <= 0)
                 {
-                    completion_building.GetComponent<InfrastructureContorl>().MoveStop(hit.point);
-                    completion_building = null;
-                    bo_building = false;
+                    CompletionBuilding.GetComponent<InfrastructureContorl>().MoveStop(hit.point);
+                    CompletionBuilding = null;
+                    BuildingBo = false;
                 }
             }
 
+            if (CompletionBuilding != null)
+            {
+                CompletionBuilding.transform.position = hit.point;
 
-            if (completion_building != null)
-                completion_building.transform.position = hit.point;
-
-         
-
-
+            }
         }
-
-
-
-
     }
+
+    void MouseMove()
+    {
+        var TimeDeltaTime = Time.deltaTime;
+        if (Input.mousePosition.x > _MinMaxScreenIntend) transform.position += transform.right * TimeDeltaTime * _Speed; 
+        if (Input.mousePosition.x < Screen.width - _MinMaxScreenIntend) transform.position -= transform.right * TimeDeltaTime * _Speed; 
+        if (Input.mousePosition.y > _MinMaxScreenIntend) transform.position += transform.forward * TimeDeltaTime * _Speed; 
+        if (Input.mousePosition.y < Screen.height - _MinMaxScreenIntend) transform.position -= transform.forward * TimeDeltaTime * _Speed; 
+
+        _MouceScrol = Input.GetAxis("Mouse ScrollWheel");
+        if ((_MouceScrol > 0.1) && (transform.position.y >= _MouceScrolMin))
+        {
+            transform.position -= transform.up * TimeDeltaTime * _MouceScrolSpeed;
+        }
+        if ((_MouceScrol < -0.1) && (transform.position.y <= _MouceScrolMax))
+        {
+            transform.position += transform.up * TimeDeltaTime * _MouceScrolSpeed;
+        }
+    }
+
+
     public void Building(GameObject go)
     {
-        go_building = null;
-        completion_building = null;
-        Activ_Object.Clear();
-        go_building = go;
-        bo_building = true;
-        Instantiate(go_building, hit.point, Quaternion.identity);
+        //go_building = null;
+        //completion_building = null;
+        //ActivObject.Clear();
+        //go_building = go;
+        Deselect();
+        BuildingBo = true;
+        Instantiate(go, hit.point, Quaternion.identity);
     }
 
     public void Building_test(GameObject go)
     {
-        completion_building = go;
+        CompletionBuilding = go;
     }
+
+
+    void Deselect()
+    {
+        BuildingGo = null;
+        BuildingBo = false;
+        MenuRightButtonMouseEnemy.SetActive(false);
+        ActivObject.Clear();
+        if (CompletionBuilding != null)
+            CompletionBuilding.GetComponent<InfrastructureContorl>()._destroy();
+    }
+
+
+    public void R_menu(string r)
+    {
+        MenuRightButtonMouseEnemy.SetActive(false);
+        switch (r)
+        {
+            case "Attack":
+                foreach (GameObject go in ActivObject)
+                {
+                    Debug.Log("attack");
+                    go.GetComponent<PlayerControl>().Attack(MenuRightButtonMouseTarget);
+                }
+                break;
+            case "ToFollow":
+                foreach (GameObject go in ActivObject)
+                {
+                    go.GetComponent<PlayerControl>().ToFollow(MenuRightButtonMouseTarget);
+                }
+                break;
+            case "Steal":
+                foreach (GameObject go in ActivObject)
+                {
+                    go.GetComponent<PlayerControl>().Steal(MenuRightButtonMouseTarget);
+                }
+                break;
+            case "Abduct":
+                foreach (GameObject go in ActivObject)
+                {
+                    go.GetComponent<PlayerControl>().Abduct(MenuRightButtonMouseTarget);
+                }
+                break;
+        }
+    }
+    public void Position()
+    {
+        Debug.Log("zazaza");
+    }
+
 }

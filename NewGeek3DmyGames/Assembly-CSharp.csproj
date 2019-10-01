@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\AIControl\Scripts\MyAIContol.cs" />
+    <Compile Include="Assets\AIControl\Scripts\Parrent.cs" />
     <Compile Include="Assets\AIControl\Scripts\Stats.cs" />
     <Compile Include="Assets\NavmeshComponents\Scripts\EnableIffSleeping.cs" />
     <Compile Include="Assets\NavmeshComponents\Scripts\LocalNavMeshBuilder.cs" />
@@ -72,6 +73,11 @@
     <Compile Include="Assets\Prefabs\Building.cs" />
     <Compile Include="Assets\Prefabs\InfrastructureContorl.cs" />
     <Compile Include="Assets\Prefabs\WorkForAi.cs" />
+    <Compile Include="Assets\Scripts\Controller\BaseController.cs" />
+    <Compile Include="Assets\Scripts\Controller\InputController.cs" />
+    <Compile Include="Assets\Scripts\Interface\IOnUpdate.cs" />
+    <Compile Include="Assets\Scripts\Main.cs" />
+    <Compile Include="Assets\Scripts\Model\BaseObjectScene.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Unity/NewGeek3DmyGames/NewGeek3DmyGames/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>

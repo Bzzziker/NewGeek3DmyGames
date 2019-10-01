@@ -4,39 +4,22 @@ using UnityEngine;
 
 public class Building : MonoBehaviour
 {
-    public GameObject cameraMotor;
-    public GameObject[] bildings; 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+    GameObject _CameraMotor;
+    public GameObject[] Bilding;
 
-    }
-
-    // Update is called once per frame
-    void Update()
+    void Awake()
     {
-        
+        _CameraMotor = GameObject.FindGameObjectWithTag("CameraMotor");
     }
     public void Bildings(string name)
     {
-        //switch(name)
-        //
-        //    case "Sawmill":
-        //        cameraMotor.GetComponent<MouseControl>().Building(bildings[0]);
-        //        break;
-
-        //}
-
-        foreach(GameObject go in bildings)
+        foreach(GameObject go in Bilding)
         {
             if(go.name==name)
             {
-                cameraMotor.GetComponent<MouseControl>().Building(go);
+                _CameraMotor.GetComponent<MouseControl>().Building(go);
             }
         }
     }
-
-
 }
 

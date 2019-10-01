@@ -2,68 +2,46 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WorkForAi : MonoBehaviour
+public class WorkForAi: MonoBehaviour
 {
-    //Массив объектов с рабочими местами
-    List<GameObject> job_go;
-    public List<BD_Work> bd_work;
-
-    // Start is called before the first frame update
+    List<DataBaseWorks> _DataBaseWorks;
+       
     void Start()
     {
-        bd_work = new List<BD_Work>();
-        job_go = new List<GameObject>();
+        _DataBaseWorks = new List<DataBaseWorks>();
     }
 
-
-    // Update is called once per frame3
-    void Update()
+    public void NewJob(GameObject go,float salary)
     {
-        
+        _DataBaseWorks.Add(new DataBaseWorks() { ObjectWork = go, Salary = salary });
     }
 
-
-    public void NewJob(GameObject go,int level,float salary)
+    public GameObject WorkSearches(int Level,GameObject house)
     {
-        bd_work.Add(new BD_Work() { go_work = go, Level = level,Salary=salary });
-        Debug.Log("exy");
-        
-        //job_go.Add(go);
-    }
-
-    public GameObject Work_Searches(int Level,GameObject house)
-    {
-        GameObject resul=null;
+        GameObject _Resul=null;
         float dist;
-        float max_salory=0;
-        if(bd_work.Count>0)
+        float _MaxSalory=0;
+        if(_DataBaseWorks.Count > 0)
         {
-            foreach (BD_Work bd in bd_work)
+            foreach (DataBaseWorks DBWorks in _DataBaseWorks)
             {
-                if (bd.Level <= Level)
-                {
-                    if( max_salory<=bd.Salary)
+                //if (DataBaseWorks.Level <= Level)
+                //{
+                    if( _MaxSalory<= DBWorks.Salary)
                     {
-                        max_salory = bd.Salary;
-                        resul = bd.go_work;
-                    }
-                    
-                }
+                        _MaxSalory = DBWorks.Salary;
+                        _Resul = DBWorks.ObjectWork;
+                    }                    
+                //}
             }
-        }
-      
-
-
-
-
-        return resul;
+        } 
+     return _Resul;
     }
-
 }
-public class BD_Work
+
+public class DataBaseWorks
 {
-    public GameObject go_work;
+    public GameObject ObjectWork;
     public int Level;
     public float Salary;
- 
 }
